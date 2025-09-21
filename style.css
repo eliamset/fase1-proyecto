@@ -1,0 +1,424 @@
+/* Estilos Generales */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f7f6;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+header h1 {
+    color: #2c5d63;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+/* Estilos de las Secciones */
+section {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+    color: #4a7c59;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Estilos de Formularios */
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    min-width: 120px; /* Evita que los inputs se encojan demasiado */
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #5d9b9b;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #4a7c59;
+}
+
+/* Estilos de las Listas */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #e8f0fe;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 5px solid #5d9b9b;
+}
+
+/* Sección de Recomendaciones */
+#recomendaciones ul {
+    padding-left: 20px;
+    list-style-type: "🌿";
+    padding-left: 25px;
+}
+
+/* Estilos del Panel de Resumen */
+#resumen-diario {
+    background-color: #4a7c59; /* Un color de acento oscuro */
+    color: #ffffff;
+}
+
+#resumen-diario h2 {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom-color: #ffffff44;
+}
+
+.resumen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 20px;
+    text-align: center;
+}
+
+.resumen-item h3 {
+    margin: 0 0 5px 0;
+    font-weight: normal;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.resumen-item p {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* Media Queries para Responsividad */
+@media (min-width: 768px) {
+    main {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    #resumen-diario {
+        grid-column: 1 / -1; /* Hacer que el resumen ocupe todo el ancho */
+    }
+    #recomendaciones {
+        grid-column: 1 / -1;
+    }
+    #suscripcion {
+        grid-column: 1 / -1;
+    }
+    .planes-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    header h1 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Estilo para el botón de eliminar en las listas */
+li .delete-btn {
+    background: none;
+    border: none;
+    color: #b0b0b0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+li .delete-btn:hover {
+    color: #e53935; /* Rojo al pasar el ratón */
+}
+
+/* Estilo para el mensaje de lista vacía */
+.empty-state {
+    background-color: transparent;
+    border: 2px dashed #e0e0e0;
+    color: #aaa;
+    text-align: center;
+    border-left: none;
+}
+
+/* Animación para nuevos elementos */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.item-animation {
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* --- Estilos para Login y Visibilidad --- */
+.hidden {
+    display: none !important;
+}
+
+#auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://images.unsplash.com/photo-1506126613408-4e0e0861340e?auto=format&fit=crop&q=80&w=2070') no-repeat center center/cover;
+    z-index: 1000;
+}
+
+.auth-box {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    backdrop-filter: blur(10px);
+}
+
+.auth-box h2 {
+    margin-top: 0;
+}
+
+.auth-box form {
+    flex-direction: column;
+}
+
+.auth-box input {
+    width: 100%;
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
+    margin-bottom: 10px;
+}
+
+.auth-box .btn-secondary {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.auth-box .btn-secondary:hover {
+    background-color: #ccc;
+}
+
+.auth-box small {
+    display: block;
+    margin-top: 20px;
+    color: #999;
+}
+
+.auth-box a {
+    display: block;
+    margin-top: 15px;
+    color: #4a7c59;
+    text-decoration: none;
+}
+
+#logout-btn {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #f44336;
+}
+
+#logout-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* --- Estilos de Suscripción --- */
+.planes-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+.plan-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 25px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: #fff;
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.plan-card h3 {
+    color: #2c5d63;
+    margin-top: 0;
+}
+
+.plan-card .price {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #4a7c59;
+    margin: 10px 0;
+}
+
+.plan-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.plan-card li {
+    background: none;
+    border: none;
+    padding: 6px 0;
+    justify-content: flex-start;
+    gap: 10px;
+    text-align: left;
+}
+
+.plan-card .fa-check { color: #4a7c59; }
+.plan-card .fa-times { color: #e53935; }
+
+.plan-card.featured {
+    border: 2px solid #5d9b9b;
+    transform: scale(1.02);
+}
+
+/* --- Estilos del Modal de Pago --- */
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-container.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-container.visible .modal-content {
+    transform: translateY(0);
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #aaa;
+    cursor: pointer;
+    padding: 0;
+}
+
+.modal-content h2 {
+    text-align: center;
+}
+
+.modal-content p {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+#payment-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+#payment-form .form-row {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+#payment-form .form-row > div {
+    flex: 1;
+}
+
+#payment-form button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salud y Bienestar</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1><i class="fa-solid fa-heart-pulse"></i> Panel de Salud y Bienestar</h1>
+        <button id="logout-btn" class="hidden">Cerrar Sesión</button>
+    </header>
+
+    <!-- Contenedor de Inicio de Sesión -->
+    <div id="auth-container">
+        <!-- Caja de Login -->
+        <div id="login-box" class="auth-box">
+            <h2>Bienvenido</h2>
+            <p>Inicia sesión para continuar</p>
+            <form id="login-form">
+                <input type="email" placeholder="Correo electrónico" required>
+                <input type="password" placeholder="Contraseña" required>
+                <button type="submit">Iniciar Sesión</button>
+                <button type="button" id="show-register-btn" class="btn-secondary">Registrarse</button>
+            </form>
+        </div>
+        <!-- Caja de Registro -->
+        <div id="register-box" class="auth-box hidden">
+            <h2>Crear Cuenta</h2>
+            <form id="register-form">
+                <input type="text" placeholder="Nombre" required>
+                <input type="email" placeholder="Correo electrónico" required>
+                <input type="password" placeholder="Contraseña" required>
+                <button type="submit">Crear Cuenta</button>
+            </form>
+            <a href="#" id="show-login-link">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
+    </div>
+
+    <main id="app-container" class="hidden">
+        <!-- Panel de Resumen Diario -->
+        <section id="resumen-diario">
+            <h2><i class="fa-solid fa-chart-line"></i> Resumen de Hoy</h2>
+            <div class="resumen-grid">
+                <div class="resumen-item">
+                    <h3>Ejercicio</h3>
+                    <p><span id="total-ejercicio">0</span> min</p>
+                </div>
+                <div class="resumen-item">
+                    <h3>Calorías</h3>
+                    <p><span id="total-calorias">0</span> kcal</p>
+                </div>
+                <div class="resumen-item">
+                    <h3>Meditación</h3>
+                    <p><span id="total-meditacion">0</span> min</p>
+                </div>
+            </div>
+        </section>
+        <!-- Sección de Ejercicio -->
+        <section id="ejercicio">
+            <h2><i class="fa-solid fa-dumbbell"></i> Seguimiento de Ejercicio</h2>
+            <form id="form-ejercicio">
+                <input type="text" id="tipo-ejercicio" placeholder="Tipo de ejercicio (ej. Correr)" required>
+                <input type="number" id="duracion-ejercicio" placeholder="Duración (minutos)" required min="1">
+                <input type="date" id="fecha-ejercicio" required>
+                <button type="submit">Añadir Rutina</button>
+            </form>
+            <ul id="lista-ejercicio">
+                <!-- Las rutinas se añadirán aquí -->
+            </ul>
+        </section>
+
+        <!-- Sección de Comidas -->
+        <section id="comidas">
+            <h2><i class="fa-solid fa-utensils"></i> Registro de Comidas</h2>
+            <form id="form-comidas">
+  <input type="date" id="fecha-comida">
+  <input type="text" id="descripcion-comida" placeholder="Descripción">
+  <input type="number" id="calorias-comida" placeholder="Calorías">
+  <button type="submit">Guardar</button>
+</form>
+<ul id="lista-comidas"></ul>
+
+        </section>
+
+        <!-- Sección de Meditación -->
+        <section id="meditacion">
+            <h2><i class="fa-solid fa-brain"></i> Práctica de Meditación</h2>
+            <form id="form-meditacion">
+                <input type="number" id="duracion-meditacion" placeholder="Duración (minutos)" required min="1">
+                <input type="date" id="fecha-meditacion" required>
+                <button type="submit">Añadir Sesión</button>
+            </form>
+            <ul id="lista-meditacion">
+                <!-- Las sesiones se añadirán aquí -->
+            </ul>
+        </section>
+
+        <!-- Sección de Recomendaciones -->
+        <section id="recomendaciones">
+            <h2><i class="fa-solid fa-lightbulb"></i> Consejos de Bienestar</h2>
+            <ul>
+                <li><strong>Sueño reparador:</strong> Intenta dormir 7-8 horas. Evita pantallas una hora antes de acostarte.</li>
+                <li><strong>Respiración consciente:</strong> Dedica 5 minutos a respirar profundamente. Inhala por la nariz (4s), sostén (4s) y exhala por la boca (6s).</li>
+                <li><strong>Hidratación:</strong> Bebe al menos 2 litros de agua al día para mantener tu energía y concentración.</li>
+                <li><strong>Pausas activas:</strong> Si trabajas sentado, levántate y estira cada hora para mejorar la circulación.</li>
+            </ul>
+        </section>
+
+        <!-- Sección de Suscripción -->
+        <section id="suscripcion">
+            <h2><i class="fa-solid fa-crown"></i> Planes de Suscripción</h2>
+            <div class="planes-grid">
+                <div class="plan-card">
+                    <h3>Básico</h3>
+                    <p class="price">Gratis</p>
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> Seguimiento diario</li>
+                        <li><i class="fa-solid fa-check"></i> Resumen del día</li>
+                        <li><i class="fa-solid fa-times"></i> Gráficos de progreso</li>
+                    </ul>
+                    <button class="btn-secondary" disabled>Plan Actual</button>
+                </div>
+                <div class="plan-card featured">
+                    <h3>Premium</h3>
+                    <p class="price">$5/mes</p>
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> Seguimiento diario</li>
+                        <li><i class="fa-solid fa-check"></i> Resumen del día</li>
+                        <li><i class="fa-solid fa-check"></i> Gráficos de progreso</li>
+                        <li><i class="fa-solid fa-check"></i> Soporte prioritario</li>
+                    </ul>
+                    <button id="subscribe-premium-btn">Obtener Premium</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Modal de Pago -->
+    <div id="payment-modal" class="modal-container">
+        <div class="modal-content">
+            <button class="close-modal-btn">&times;</button>
+            <h2><i class="fa-solid fa-credit-card"></i> Realizar Pago</h2>
+            <p>Estás a punto de suscribirte al <strong>Plan Premium</strong> por <strong>$5/mes</strong>.</p>
+            <form id="payment-form">
+                <label for="card-number">Número de Tarjeta</label>
+                <input type="text" id="card-number" placeholder="0000 0000 0000 0000" required>
+                
+                <div class="form-row">
+                    <div>
+                        <label for="expiry-date">Fecha de Vencimiento</label>
+                        <input type="text" id="expiry-date" placeholder="MM/AA" required>
+                    </div>
+                    <div>
+                        <label for="cvc">CVC</label>
+                        <input type="text" id="cvc" placeholder="123" required>
+                    </div>
+                </div>
+                <button type="submit">Pagar $5</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
