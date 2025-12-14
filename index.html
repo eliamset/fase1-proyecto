@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,31 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+
 <body>
     <header>
+
         <h1><i class="fa-solid fa-heart-pulse"></i> Panel de Salud y Bienestar</h1>
-        <button id="logout-btn" class="hidden">Cerrar Sesión</button>
+
+        <!-- Botón hamburguesa + menú -->
+        <div id="hamburger-container">
+            <i class="fa-solid fa-bars" id="hamburger-btn"></i>
+
+            <ul id="hamburger-menu" class="hidden">
+                <li id="menu-perfil">Perfil</li>
+                <li id="menu-config">Configuración</li>
+                <li id="menu-ayuda">Ayuda</li>
+
+                <!-- ESTE ES EL QUE FALTA -->
+                <li id="menu-imc">Calcular IMC</li>
+            </ul>
+
+
+        </div>
+
+
+
+
     </header>
 
     <!-- Contenedor de Inicio de Sesión -->
@@ -76,12 +98,12 @@
         <section id="comidas">
             <h2><i class="fa-solid fa-utensils"></i> Registro de Comidas</h2>
             <form id="form-comidas">
-  <input type="date" id="fecha-comida">
-  <input type="text" id="descripcion-comida" placeholder="Descripción">
-  <input type="number" id="calorias-comida" placeholder="Calorías">
-  <button type="submit">Guardar</button>
-</form>
-<ul id="lista-comidas"></ul>
+                <input type="date" id="fecha-comida">
+                <input type="text" id="descripcion-comida" placeholder="Descripción">
+                <input type="number" id="calorias-comida" placeholder="Calorías">
+                <button type="submit">Guardar</button>
+            </form>
+            <ul id="lista-comidas"></ul>
 
         </section>
 
@@ -97,15 +119,42 @@
                 <!-- Las sesiones se añadirán aquí -->
             </ul>
         </section>
+        <!-- Sección de IMC -->
+        <section id="section-imc" class="hidden seccion">
+            <h2><i class="fa-solid fa-weight-scale"></i> Índice de Masa Corporal (IMC)</h2>
+
+            <form id="form-imc">
+                <input type="number" id="peso-imc" placeholder="Peso (kg)" required>
+                <input type="number" id="estatura-imc" placeholder="Estatura (m, ej: 1.75)" step="0.01" required>
+                <button type="submit">Calcular IMC</button>
+            </form>
+
+            <div id="resultado-imc" style="margin-top: 15px; font-size: 1.2rem; font-weight: bold;"></div>
+
+            <!-- Contenedor para la gráfica -->
+            <div style="width: 300px; margin: 20px auto;">
+                <canvas id="imc-chart"></canvas>
+            </div>
+
+            <button type="button" id="btn-volver-imc" class="btn-secondary" style="margin-top: 20px;">Volver al
+                Inicio</button>
+        </section>
+
+        <!-- Script de Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <!-- Sección de Recomendaciones -->
         <section id="recomendaciones">
             <h2><i class="fa-solid fa-lightbulb"></i> Consejos de Bienestar</h2>
             <ul>
-                <li><strong>Sueño reparador:</strong> Intenta dormir 7-8 horas. Evita pantallas una hora antes de acostarte.</li>
-                <li><strong>Respiración consciente:</strong> Dedica 5 minutos a respirar profundamente. Inhala por la nariz (4s), sostén (4s) y exhala por la boca (6s).</li>
-                <li><strong>Hidratación:</strong> Bebe al menos 2 litros de agua al día para mantener tu energía y concentración.</li>
-                <li><strong>Pausas activas:</strong> Si trabajas sentado, levántate y estira cada hora para mejorar la circulación.</li>
+                <li><strong>Sueño reparador:</strong> Intenta dormir 7-8 horas. Evita pantallas una hora antes de
+                    acostarte.</li>
+                <li><strong>Respiración consciente:</strong> Dedica 5 minutos a respirar profundamente. Inhala por la
+                    nariz (4s), sostén (4s) y exhala por la boca (6s).</li>
+                <li><strong>Hidratación:</strong> Bebe al menos 2 litros de agua al día para mantener tu energía y
+                    concentración.</li>
+                <li><strong>Pausas activas:</strong> Si trabajas sentado, levántate y estira cada hora para mejorar la
+                    circulación.</li>
             </ul>
         </section>
 
@@ -137,7 +186,7 @@
             </div>
         </section>
     </main>
-    
+
     <!-- Modal de Pago -->
     <div id="payment-modal" class="modal-container">
         <div class="modal-content">
@@ -147,7 +196,7 @@
             <form id="payment-form">
                 <label for="card-number">Número de Tarjeta</label>
                 <input type="text" id="card-number" placeholder="0000 0000 0000 0000" required>
-                
+
                 <div class="form-row">
                     <div>
                         <label for="expiry-date">Fecha de Vencimiento</label>
@@ -164,5 +213,8 @@
     </div>
 
     <script src="script.js"></script>
+    <button id="logout-btn" class="hidden">Cerrar Sesión</button>
+
 </body>
+
 </html>

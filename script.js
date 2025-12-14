@@ -32,12 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const listaEjercicio = document.getElementById('lista-ejercicio');
 
     // Comidas
-   const formComidas = document.getElementById('form-comidas');
-const fechaComidaInput = document.getElementById('fecha-comida');
-const descripcionComidaInput = document.getElementById('descripcion-comida');
-const caloriasComidaInput = document.getElementById('calorias-comida');
-const listaComidas = document.getElementById('lista-comidas');
-
+    const formComidas = document.getElementById('form-comidas');
+    const fechaComidaInput = document.getElementById('fecha-comida');
+    const descripcionComidaInput = document.getElementById('descripcion-comida');
+    const caloriasComidaInput = document.getElementById('calorias-comida');
+    const listaComidas = document.getElementById('lista-comidas');
 
     // Meditación
     const formMeditacion = document.getElementById('form-meditacion');
@@ -57,7 +56,174 @@ const listaComidas = document.getElementById('lista-comidas');
     const closeModalBtn = document.querySelector('.close-modal-btn');
 
 
-    // --- Lógica de Autenticación (Simulada) ---
+    // ------------------------------------------------------------------------
+    // -------------------------- SECCIÓN IMC ---------------------------------
+    // ------------------------------------------------------------------------
+
+    const menuIMC = document.getElementById("menu-imc");
+    const sectionIMC = document.getElementById("section-imc");
+    const btnCalcularIMC = document.getElementById("btn-calcular-imc");
+    const resultadoIMC = document.getElementById("resultado-imc");
+
+    // Ocultar todas las secciones (ejercicios, comidas, meditación, IMC)
+    function ocultarTodasLasSecciones() {
+        document.querySelectorAll("section").forEach(sec => {
+            sec.classList.add("hidden");
+        });
+    }
+
+    // Acción al abrir IMC desde menú
+    if (menuIMC) {
+        menuIMC.addEventListener("click", () => {
+            ocultarTodasLasSecciones();
+            sectionIMC.classList.remove("hidden");
+            hamburgerMenu.classList.add("hidden");
+        });
+    }
+
+    // Lógica del cálculo de IMC
+    // Lógica del cálculo de IMC
+    const formIMC = document.getElementById("form-imc");
+    let imcChart = null; // Variable global para la gráfica
+
+    if (formIMC) {
+        formIMC.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const peso = Number(document.getElementById("peso-imc").value);
+            const estatura = Number(document.getElementById("estatura-imc").value);
+
+            if (!peso || !estatura) {
+                resultadoIMC.textContent = "Por favor completa todos los campos.";
+                return;
+            }
+
+            // Estatura en metros, no dividir por 100
+            const imc = (peso / (estatura * estatura)).toFixed(2);
+
+            let clasificacion = "";
+            let color = "";
+
+            // Logic for classification and color
+            if (imc < 18.5) {
+                clasificacion = "(Bajo peso)";
+                color = "#3498db"; // Azul
+            } else if (imc < 25) {
+                clasificacion = "(Peso normal)";
+                color = "#2ecc71"; // Verde
+            } else if (imc < 30) {
+                clasificacion = "(Sobrepeso)";
+                color = "#f1c40f"; // Amarillo/Naranja
+            } else {
+                clasificacion = "(Obesidad)";
+                color = "#e74c3c"; // Rojo
+            }
+
+            resultadoIMC.textContent = `Tu IMC es ${imc} ${clasificacion}`;
+
+            // Render Chart
+            const ctx = document.getElementById('imc-chart').getContext('2d');
+
+            // Destruir gráfica anterior si existe
+            if (imcChart) {
+                imcChart.destroy();
+            }
+
+            // Plugin para dibujar la aguja
+            const gaugeNeedle = {
+                id: 'gaugeNeedle',
+                afterDatasetDraw(chart, args, options) {
+                    const { ctx, config, data, chartArea: { top, bottom, left, right, width, height } } = chart;
+
+                    ctx.save();
+
+                    const needleValue = options.value;
+                    const dataTotal = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                    const angle = Math.PI + (1 / dataTotal * needleValue * Math.PI);
+
+                    const cx = width / 2;
+                    const cy = chart._metasets[0].data[0].y;
+
+                    // Calcular radio para el largo de la aguja
+                    // Usamos el radio externo del primer segmento como referencia
+                    const radius = chart._metasets[0].data[0].outerRadius;
+
+                    // Dibujar la aguja
+                    ctx.translate(cx, cy);
+                    ctx.rotate(angle);
+                    ctx.beginPath();
+                    ctx.moveTo(0, -5); // Base un poco más ancha
+                    ctx.lineTo(radius - 20, 0); // Largo basado en el radio
+                    ctx.lineTo(0, 5);
+                    ctx.fillStyle = '#444';
+                    ctx.fill();
+
+                    // Dibujar el punto central (pivote)
+                    ctx.rotate(-angle); // Reset rotation
+                    ctx.translate(-cx, -cy); // Reset translate
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 5, 0, 10);
+                    ctx.fillStyle = '#444';
+                    ctx.fill();
+                    ctx.restore();
+                }
+            };
+
+            imcChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Bajo', 'Normal', 'Sobrepeso', 'Obesidad'],
+                    datasets: [{
+                        data: [18.5, 6.5, 5, 20], // Suma = 50. Rangos: 0-18.5, 18.5-25, 25-30, 30-50
+                        backgroundColor: [
+                            '#3498db', // Bajo
+                            '#2ecc71', // Normal
+                            '#f1c40f', // Sobrepeso
+                            '#e74c3c'  // Obesidad
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    rotation: -90,
+                    circumference: 180,
+                    layout: { padding: { bottom: 20 } },
+                    plugins: {
+                        tooltip: { enabled: false },
+                        legend: { position: 'bottom' },
+                        title: {
+                            display: true,
+                            text: `Tu IMC: ${imc}`,
+                            font: { size: 16 }
+                        },
+                        gaugeNeedle: {
+                            value: Math.min(Math.max(imc, 0), 50) // Clamp value between 0 and 50
+                        }
+                    }
+                },
+                plugins: [gaugeNeedle]
+            });
+        });
+    }
+
+    // Botón Volver al Inicio (IMC)
+    const btnVolverIMC = document.getElementById("btn-volver-imc");
+    if (btnVolverIMC) {
+        btnVolverIMC.addEventListener("click", () => {
+            sectionIMC.classList.add("hidden");
+            // Mostrar secciones del dashboard
+            document.getElementById("resumen-diario").classList.remove("hidden");
+            document.getElementById("ejercicio").classList.remove("hidden");
+            document.getElementById("comidas").classList.remove("hidden");
+            document.getElementById("meditacion").classList.remove("hidden");
+            document.getElementById("recomendaciones").classList.remove("hidden");
+            document.getElementById("suscripcion").classList.remove("hidden");
+        });
+    }
+
+    // ------------------------------------------------------------------------
+    // ---------------------- AUTENTICACIÓN Y APP ------------------------------
+    // ------------------------------------------------------------------------
+
     const checkLogin = () => {
         if (localStorage.getItem('token')) {
             showApp();
@@ -72,8 +238,7 @@ const listaComidas = document.getElementById('lista-comidas');
         appContainer.classList.remove('hidden');
         logoutBtn.classList.remove('hidden');
         header.style.justifyContent = 'space-between';
-        document.body.style.overflow = 'auto'; // Permitir scroll en la app
-        // Cargar datos y configurar la app
+        document.body.style.overflow = 'auto';
         setInitialDates();
         cargarTodosLosDatos();
         checkUserSubscription();
@@ -86,7 +251,7 @@ const listaComidas = document.getElementById('lista-comidas');
         appContainer.classList.add('hidden');
         logoutBtn.classList.add('hidden');
         header.style.justifyContent = 'center';
-        document.body.style.overflow = 'hidden'; // Bloquear scroll en el login
+        document.body.style.overflow = 'hidden';
     };
 
     const showRegister = () => {
@@ -94,11 +259,10 @@ const listaComidas = document.getElementById('lista-comidas');
         registerBox.classList.remove('hidden');
     };
 
-    // --- Lógica del Modal de Pago ---
+    // Modal de pago
     const openPaymentModal = () => {
         paymentModal.classList.add('visible');
     };
-
     const closePaymentModal = () => {
         paymentModal.classList.remove('visible');
     };
@@ -113,8 +277,7 @@ const listaComidas = document.getElementById('lista-comidas');
         }
     };
 
-
-    // --- Funciones Auxiliares y de API ---
+    // -------------------- API y funciones auxiliares -------------------------
     const setInitialDates = () => {
         fechaEjercicioInput.value = today;
         fechaComidaInput.value = today;
@@ -135,26 +298,22 @@ const listaComidas = document.getElementById('lista-comidas');
     };
 
     const formatDate = (dateString) => {
-        const date = new Date(dateString + 'T00:00:00'); // Asegura la zona horaria local
+        const date = new Date(dateString + 'T00:00:00');
         return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
     };
 
-    // --- Cargar y renderizar datos ---
     const cargarTodosLosDatos = async () => {
         try {
-            // Cargar datos del usuario
             const resUser = await apiFetch('/auth');
             if (!resUser.ok) throw new Error('Error al cargar datos del usuario');
             appState.user = await resUser.json();
             checkUserSubscription();
 
-            // Cargar Ejercicios
             const resEjercicios = await apiFetch('/exercises');
             if (!resEjercicios.ok) throw new Error('Error al cargar ejercicios');
             appState.ejercicios = await resEjercicios.json();
             renderizarLista(appState.ejercicios, listaEjercicio, crearElementoEjercicio, 'Añade tu primera rutina.');
 
-            // TODO: Cargar Comidas y Meditaciones de forma similar cuando las rutas estén listas
             renderizarLista(appState.comidas, listaComidas, crearElementoComida, 'Registra tu primera comida.');
             renderizarLista(appState.meditaciones, listaMeditacion, crearElementoMeditacion, 'Añade tu primera sesión.');
 
@@ -166,7 +325,7 @@ const listaComidas = document.getElementById('lista-comidas');
     };
 
     const renderizarLista = (datos, listaElement, creadorDeElemento, emptyMessage) => {
-        listaElement.innerHTML = ''; // Limpiar lista
+        listaElement.innerHTML = '';
         if (datos.length === 0) {
             const li = document.createElement('li');
             li.className = 'empty-state';
@@ -191,11 +350,9 @@ const listaComidas = document.getElementById('lista-comidas');
             const listaElement = elementoLi.parentElement;
             elementoLi.remove();
 
-            // Actualizar estado local
             if (endpoint === 'exercises') {
                 appState.ejercicios = appState.ejercicios.filter(item => item._id !== id);
             }
-            // TODO: Añadir lógica para 'meals' y 'meditations'
 
             if (listaElement.children.length === 0) {
                 const li = document.createElement('li');
@@ -209,8 +366,7 @@ const listaComidas = document.getElementById('lista-comidas');
         }
     };
 
-    // --- Creadores de Elementos de la Lista ---
-    const crearElementoEjercicio = (ejercicio, emptyMessage) => {
+    const crearElementoEjercicio = (ejercicio) => {
         const li = document.createElement('li');
         li.dataset.id = ejercicio._id;
         li.innerHTML = `
@@ -226,33 +382,30 @@ const listaComidas = document.getElementById('lista-comidas');
         return li;
     };
 
-    const crearElementoComida = (comida, emptyMessage) => {
-    const li = document.createElement('li');
-    li.dataset.id = comida._id;
-    const caloriasTexto = comida.calorias ? ` - ${comida.calorias} kcal` : '';
-    li.innerHTML = `
-        <span>
-            <small>${formatDate(comida.fecha.split('T')[0])}</small> - 
-            <strong>${comida.nombre}</strong>${caloriasTexto}  <!-- 👈 usar "nombre" -->
-        </span>
-        <button class="delete-btn" title="Eliminar">&times;</button>
-    `;
-    li.querySelector('.delete-btn').addEventListener('click', () => {
-        eliminarDato('foods', comida._id, li, 'Registra tu primera comida.');
-    });
-    return li;
-};
-
-
-    const crearElementoMeditacion = (meditacion, emptyMessage) => {
+    const crearElementoComida = (comida) => {
         const li = document.createElement('li');
-        li.dataset.id = meditacion._id;
+        const caloriasTexto = comida.calorias ? ` - ${comida.calorias} kcal` : '';
+        li.innerHTML = `
+            <span>
+                <small>${formatDate(comida.fecha.split('T')[0])}</small> - 
+                <strong>${comida.nombre}</strong>${caloriasTexto}
+            </span>
+            <button class="delete-btn">&times;</button>
+        `;
+        li.querySelector('.delete-btn').addEventListener('click', () => {
+            eliminarDato('foods', comida._id, li, 'Registra tu primera comida.');
+        });
+        return li;
+    };
+
+    const crearElementoMeditacion = (meditacion) => {
+        const li = document.createElement('li');
         li.innerHTML = `
             <span>
                 <small>${formatDate(meditacion.fecha.split('T')[0])}</small> - 
                 <strong>Sesión</strong> (${meditacion.duracion} min)
             </span>
-            <button class="delete-btn" title="Eliminar">&times;</button>
+            <button class="delete-btn">&times;</button>
         `;
         li.querySelector('.delete-btn').addEventListener('click', () => {
             eliminarDato('meditations', meditacion._id, li, 'Añade tu primera sesión.');
@@ -260,32 +413,29 @@ const listaComidas = document.getElementById('lista-comidas');
         return li;
     };
 
-    // --- Función de Resumen ---
     const actualizarResumenDiario = () => {
         const todayStr = new Date().toISOString().split('T')[0];
 
-        // Calcular ejercicio
         const totalEjercicio = appState.ejercicios
             .filter(e => e.fecha.startsWith(todayStr))
             .reduce((sum, e) => sum + Number(e.duracion), 0);
         totalEjercicioSpan.textContent = totalEjercicio;
 
-        // Calcular calorías
         const totalCalorias = appState.comidas
             .filter(c => c.fecha.startsWith(todayStr))
             .reduce((sum, c) => sum + Number(c.calorias || 0), 0);
         totalCaloriasSpan.textContent = totalCalorias;
 
-        // Calcular meditación
         const totalMeditacion = appState.meditaciones
             .filter(m => m.fecha.startsWith(todayStr))
             .reduce((sum, m) => sum + Number(m.duracion), 0);
         totalMeditacionSpan.textContent = totalMeditacion;
     };
 
-    // --- Event Listeners para los Formularios ---
+    // Guardar ejercicio
     formEjercicio.addEventListener('submit', async (e) => {
         e.preventDefault();
+
         const data = {
             tipo: tipoEjercicioInput.value,
             duracion: duracionEjercicioInput.value,
@@ -300,109 +450,116 @@ const listaComidas = document.getElementById('lista-comidas');
 
             if (!res.ok) {
                 const errorData = await res.json();
-                throw new Error(errorData.message || 'Error al añadir el ejercicio');
+                throw new Error(errorData.message || 'Error al añadir ejercicio');
             }
 
-            const ejercicioGuardado = await res.json();
-            appState.ejercicios.unshift(ejercicioGuardado); // Añadir al principio
+            const ejercicio = await res.json();
+            appState.ejercicios.unshift(ejercicio);
             renderizarLista(appState.ejercicios, listaEjercicio, crearElementoEjercicio, 'Añade tu primera rutina.');
             actualizarResumenDiario();
 
             formEjercicio.reset();
             fechaEjercicioInput.value = today;
-        } catch (error) {
-            alert(`Error: ${error.message}`);
-        }
-    });
 
-   // --- Guardar comidas ---
-formComidas.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const data = { 
-        fecha: fechaComidaInput.value,
-        nombre: descripcionComidaInput.value,   // 👈 usar "nombre" porque así lo pide tu modelo
-        calorias: caloriasComidaInput.value 
-    };
-
-    try {
-        const res = await apiFetch('/foods', {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-
-        if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.message || 'Error al añadir la comida');
-        }
-
-        const comidaGuardada = await res.json();
-        appState.comidas.unshift(comidaGuardada);
-        renderizarLista(appState.comidas, listaComidas, crearElementoComida, 'Registra tu primera comida.');
-        actualizarResumenDiario();
-
-        formComidas.reset();
-        fechaComidaInput.value = today;
-    } catch (error) {
-        alert(`Error: ${error.message}`);
-    }
-});
-
-
-// --- Guardar meditaciones ---
-formMeditacion.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const data = {
-        duracion: duracionMeditacionInput.value,
-        fecha: fechaMeditacionInput.value
-    };
-
-    try {
-        const res = await apiFetch('/meditations', {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-
-        if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.error || 'Error al añadir la meditación');
-        }
-
-        const meditacionGuardada = await res.json();
-        appState.meditaciones.unshift(meditacionGuardada); // añadir al principio
-        renderizarLista(appState.meditaciones, listaMeditacion, crearElementoMeditacion, 'Añade tu primera sesión.');
-        actualizarResumenDiario();
-
-        formMeditacion.reset();
-        fechaMeditacionInput.value = today;
-    } catch (error) {
-        alert(`Error: ${error.message}`);
-    }
-});
-
-
-
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = e.target.elements[0].value;
-        const password = e.target.elements[1].value;
-        try {
-            const res = await apiFetch('/auth/login', {
-                method: 'POST',
-                body: JSON.stringify({ email, password })
-            });
-            if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.msg || 'Error al iniciar sesión');
-            }
-            const { token } = await res.json();
-            localStorage.setItem('token', token);
-            showApp();
         } catch (error) {
             alert(error.message);
         }
     });
 
+    // Guardar comidas
+    formComidas.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = {
+            fecha: fechaComidaInput.value,
+            nombre: descripcionComidaInput.value,
+            calorias: caloriasComidaInput.value
+        };
+
+        try {
+            const res = await apiFetch('/foods', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || 'Error al añadir comida');
+            }
+
+            const comida = await res.json();
+            appState.comidas.unshift(comida);
+            renderizarLista(appState.comidas, listaComidas, crearElementoComida, 'Registra tu primera comida.');
+            actualizarResumenDiario();
+
+            formComidas.reset();
+            fechaComidaInput.value = today;
+
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    // Guardar meditaciones
+    formMeditacion.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = {
+            duracion: duracionMeditacionInput.value,
+            fecha: fechaMeditacionInput.value
+        };
+
+        try {
+            const res = await apiFetch('/meditations', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Error al añadir meditación');
+            }
+
+            const meditacion = await res.json();
+            appState.meditaciones.unshift(meditacion);
+            renderizarLista(appState.meditaciones, listaMeditacion, crearElementoMeditacion, 'Añade tu primera sesión.');
+            actualizarResumenDiario();
+
+            formMeditacion.reset();
+            fechaMeditacionInput.value = today;
+
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    // LOGIN
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = e.target.elements[0].value;
+        const password = e.target.elements[1].value;
+
+        try {
+            const res = await apiFetch('/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.msg || 'Error al iniciar sesión');
+            }
+
+            const { token } = await res.json();
+            localStorage.setItem('token', token);
+            showApp();
+
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    // LOGOUT
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('token');
         appState = { ejercicios: [], comidas: [], meditaciones: [], user: null };
@@ -418,39 +575,39 @@ formMeditacion.addEventListener('submit', async (e) => {
 
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
         const name = e.target.elements[0].value;
         const email = e.target.elements[1].value;
         const password = e.target.elements[2].value;
+
         try {
             const res = await apiFetch('/auth/register', {
                 method: 'POST',
                 body: JSON.stringify({ name, email, password })
             });
+
             if (!res.ok) {
                 const errorData = await res.json();
                 throw new Error(errorData.msg || 'Error en el registro');
             }
+
             alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
             showLogin();
+
         } catch (error) {
             alert(error.message);
         }
     });
 
     subscribePremiumBtn.addEventListener('click', openPaymentModal);
-
     closeModalBtn.addEventListener('click', closePaymentModal);
 
     paymentModal.addEventListener('click', (e) => {
-        // Cierra el modal si se hace clic en el fondo oscuro
-        if (e.target === paymentModal) {
-            closePaymentModal();
-        }
+        if (e.target === paymentModal) closePaymentModal();
     });
 
     paymentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        // Aquí iría la lógica de validación de la tarjeta
 
         try {
             const res = await apiFetch('/subscription/subscribe', {
@@ -463,15 +620,52 @@ formMeditacion.addEventListener('submit', async (e) => {
             }
 
             const { user } = await res.json();
-            appState.user = user; // Actualizar el estado del usuario
+            appState.user = user;
             closePaymentModal();
-            alert('¡Pago exitoso! Gracias por suscribirte al Plan Premium.');
+            alert('Pago exitoso. Ahora eres Premium.');
             checkUserSubscription();
+
         } catch (error) {
-            alert(`Error: ${error.message}`);
+            alert(error.message);
         }
     });
 
-    // --- Carga Inicial ---
     checkLogin();
+
+    // ------------------------------------------------------------------------
+    // ---------------------- MENÚ HAMBURGUESA --------------------------------
+    // ------------------------------------------------------------------------
+
+    const hamburgerBtn = document.getElementById("hamburger-btn");
+    const hamburgerMenu = document.getElementById("hamburger-menu");
+
+    hamburgerBtn.addEventListener("click", () => {
+        hamburgerMenu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!hamburgerBtn.contains(e.target) && !hamburgerMenu.contains(e.target)) {
+            hamburgerMenu.classList.add("hidden");
+        }
+    });
+
+    const menuPerfil = document.getElementById("menu-perfil");
+    const menuConfig = document.getElementById("menu-config");
+    const menuAyuda = document.getElementById("menu-ayuda");
+
+    menuPerfil.addEventListener("click", () => {
+        alert("Perfil próximamente...");
+        hamburgerMenu.classList.add("hidden");
+    });
+
+    menuConfig.addEventListener("click", () => {
+        alert("Configuraciones próximamente...");
+        hamburgerMenu.classList.add("hidden");
+    });
+
+    menuAyuda.addEventListener("click", () => {
+        alert("Sección de ayuda próximamente...");
+        hamburgerMenu.classList.add("hidden");
+    });
+
 });

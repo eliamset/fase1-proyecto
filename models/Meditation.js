@@ -1,19 +1,31 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const MeditationSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: false, // o true si manejas autenticación
+const Meditation = sequelize.define('Meditation', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
     },
-    duracion: {        // ⚡ usar "duracion" en vez de "minutos"
-        type: Number,
-        required: true,
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: 'users',
+            key: 'id'
+        }
+    },
+    duracion: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     fecha: {
-        type: Date,
-        default: Date.now, // siempre habrá fecha
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
-}, { timestamps: true });
+}, {
+    tableName: 'meditations',
+    timestamps: true
+});
 
-module.exports = mongoose.model('Meditation', MeditationSchema);
+module.exports = Meditation;

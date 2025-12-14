@@ -8,14 +8,13 @@ const User = require('../models/User');
 // @access  Private
 router.put('/subscribe', auth, async (req, res) => {
     try {
-        const user = await User.findById(req.user.id);
+        const user = await User.findByPk(req.user.id);
 
         if (!user) {
             return res.status(404).json({ msg: 'Usuario no encontrado' });
         }
 
-        // En una aplicación real, aquí procesarías el pago.
-        // Por ahora, simplemente actualizamos el estado de la suscripción.
+        // Actualizamos el estado de la suscripción.
         user.subscription = 'premium';
         await user.save();
 
@@ -31,7 +30,7 @@ router.put('/subscribe', auth, async (req, res) => {
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ msg: 'Error del servidor' }); // ✅ ahora devuelve JSON
+        res.status(500).json({ msg: 'Error del servidor' });
     }
 });
 

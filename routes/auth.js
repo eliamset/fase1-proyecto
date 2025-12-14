@@ -10,17 +10,19 @@ const User = require('../models/User');
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
     try {
-        let user = await User.findOne({ email });
+        let user = await User.findOne({ where: { email } });
         if (user) {
             return res.status(400).json({ msg: 'El usuario ya existe' });
         }
 
-        user = new User({ name, email, password });
-
         const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-        await user.save();
+        user = await User.create({
+            name,
+            email,
+            password: hashedPassword
+        });
 
         res.status(201).json({ msg: 'Usuario registrado exitosamente' });
     } catch (err) {
@@ -34,7 +36,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
-        let user = await User.findOne({ email });
+        const user = await User.findOne({ where: { email } });
         if (!user) {
             return res.status(400).json({ msg: 'Credenciales inválidas' });
         }
@@ -68,7 +70,9 @@ router.post('/login', async (req, res) => {
 // @access  Privado
 router.get('/', auth, async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select('-password');
+        const user = await User.findByPk(req.user.id, {
+            attributes: { exclude: ['password'] }
+        });
         if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
         res.json(user);
     } catch (err) {
@@ -82,7 +86,9 @@ router.get('/', auth, async (req, res) => {
 // @access  Público
 router.get('/users', async (req, res) => {
     try {
-        const users = await User.find().select('-password');
+        const users = await User.findAll({
+            attributes: { exclude: ['password'] }
+        });
         res.json(users);
     } catch (err) {
         console.error(err.message);

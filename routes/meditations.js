@@ -1,21 +1,21 @@
 // routes/meditations.js
 const express = require('express');
 const router = express.Router();
-const Meditation = require('../models/Meditation'); // tu modelo
+const Meditation = require('../models/Meditation');
 
 // --- Crear un registro ---
 router.post('/', async (req, res) => {
     try {
-        const { user, duracion, fecha } = req.body; // nombres coinciden con frontend
+        const { user, duracion, fecha } = req.body;
 
-        const nuevaMeditacion = new Meditation({
-            user,        // opcional según si manejas JWT
+        // Nota: 'user' aqui se usa como ID directo o string si no hay auth
+        const nuevaMeditacion = await Meditation.create({
+            userId: user || null,
             duracion,
-            fecha: fecha || Date.now() // si no envían fecha, poner hoy
+            fecha: fecha || new Date()
         });
 
-        await nuevaMeditacion.save();
-        res.status(201).json(nuevaMeditacion); // enviar el objeto guardado
+        res.status(201).json(nuevaMeditacion);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al guardar la meditación' });
@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
 // --- Obtener todos los registros ---
 router.get('/', async (req, res) => {
     try {
-        const registros = await Meditation.find();
+        const registros = await Meditation.findAll();
         res.json(registros);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener meditaciones' });

@@ -1,25 +1,35 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const SubscriptionSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: false, // o true si manejas autenticación
+const Subscription = sequelize.define('Subscription', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
     },
-    Numerodetarjeta: {        // ⚡ usar "duracion" en vez de "minutos"
-        type: String,
-        required: true,
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: 'users',
+            key: 'id'
+        }
+    },
+    Numerodetarjeta: { // Keeping original casing
+        type: DataTypes.STRING,
+        allowNull: false
     },
     FechadeVencimiento: {
-        type: String,
-        required: true, // siempre habrá fecha
-
+        type: DataTypes.STRING,
+        allowNull: false
     },
     cvc: {
-        type: String,
-        required: true,// siempre habrá fecha
+        type: DataTypes.STRING,
+        allowNull: false
     }
+}, {
+    tableName: 'subscriptions',
+    timestamps: true
+});
 
-        
-}, { timestamps: true });
-module.exports = mongoose.model('Subscription', SubscriptionSchema);
+module.exports = Subscription;

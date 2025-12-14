@@ -69,7 +69,8 @@ input[type="date"] {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;
-    min-width: 120px; /* Evita que los inputs se encojan demasiado */
+    min-width: 120px;
+    /* Evita que los inputs se encojan demasiado */
 }
 
 button {
@@ -113,7 +114,8 @@ li {
 
 /* Estilos del Panel de Resumen */
 #resumen-diario {
-    background-color: #4a7c59; /* Un color de acento oscuro */
+    background-color: #4a7c59;
+    /* Un color de acento oscuro */
     color: #ffffff;
 }
 
@@ -149,18 +151,24 @@ li {
     main {
         grid-template-columns: repeat(3, 1fr);
     }
+
     #resumen-diario {
-        grid-column: 1 / -1; /* Hacer que el resumen ocupe todo el ancho */
+        grid-column: 1 / -1;
+        /* Hacer que el resumen ocupe todo el ancho */
     }
+
     #recomendaciones {
         grid-column: 1 / -1;
     }
+
     #suscripcion {
         grid-column: 1 / -1;
     }
+
     .planes-grid {
         grid-template-columns: 1fr 1fr;
     }
+
     header h1 {
         font-size: 2.5rem;
     }
@@ -180,7 +188,8 @@ li .delete-btn {
 }
 
 li .delete-btn:hover {
-    color: #e53935; /* Rojo al pasar el ratón */
+    color: #e53935;
+    /* Rojo al pasar el ratón */
 }
 
 /* Estilo para el mensaje de lista vacía */
@@ -198,6 +207,7 @@ li .delete-btn:hover {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -230,7 +240,7 @@ li .delete-btn:hover {
     background: rgba(255, 255, 255, 0.9);
     padding: 40px;
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     text-align: center;
     max-width: 400px;
     width: 90%;
@@ -247,7 +257,8 @@ li .delete-btn:hover {
 
 .auth-box input {
     width: 100%;
-    box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
+    box-sizing: border-box;
+    /* Asegura que el padding no afecte el ancho */
     margin-bottom: 10px;
 }
 
@@ -273,17 +284,7 @@ li .delete-btn:hover {
     text-decoration: none;
 }
 
-#logout-btn {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #f44336;
-}
 
-#logout-btn:hover {
-    background-color: #d32f2f;
-}
 
 /* --- Estilos de Suscripción --- */
 .planes-grid {
@@ -303,7 +304,7 @@ li .delete-btn:hover {
 
 .plan-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .plan-card h3 {
@@ -333,8 +334,13 @@ li .delete-btn:hover {
     text-align: left;
 }
 
-.plan-card .fa-check { color: #4a7c59; }
-.plan-card .fa-times { color: #e53935; }
+.plan-card .fa-check {
+    color: #4a7c59;
+}
+
+.plan-card .fa-times {
+    color: #e53935;
+}
 
 .plan-card.featured {
     border: 2px solid #5d9b9b;
@@ -413,7 +419,7 @@ li .delete-btn:hover {
     margin-bottom: 25px;
 }
 
-#payment-form .form-row > div {
+#payment-form .form-row>div {
     flex: 1;
 }
 
@@ -421,4 +427,24 @@ li .delete-btn:hover {
     width: 100%;
     padding: 12px;
     font-size: 1.1rem;
+}
+
+/* --- Botón Cerrar Sesión abajo a la derecha --- */
+#logout-btn {
+    position: fixed !important;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 18px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1500;
+}
+
+#logout-btn:hover {
+    background-color: #d32f2f;
 }

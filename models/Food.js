@@ -1,25 +1,35 @@
-// models/Food.js
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const FoodSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: false, // o true si usas JWT
+const Food = sequelize.define('Food', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: true, // Based on original schema
+        references: {
+            model: 'users',
+            key: 'id'
+        }
     },
     nombre: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false
     },
     calorias: {
-        type: Number,
-        required: true,
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     fecha: {
-        type: Date,
-        default: Date.now,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
-}, { timestamps: true });
+}, {
+    tableName: 'foods',
+    timestamps: true
+});
 
-module.exports = mongoose.model('Food', FoodSchema);
-
+module.exports = Food;
