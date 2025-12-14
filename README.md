@@ -1,47 +1,39 @@
 # 🧘‍♂️ Aplicación de Salud y Bienestar
 
-## 📌 Descripción breve
-Aplicación diseñada para gestionar hábitos de salud: **ejercicios, alimentación y meditación**.
+## 📌 Descripción
+Aplicación web diseñada para gestionar hábitos de salud, permitiendo el registro y control de:
+- 🏋️ Ejercicios
+- 🍎 Alimentación
+- 🧠 Meditación
+- 📊 Cálculo de IMC (Índice de Masa Corporal)
+
+Incluye backend con API REST y frontend web.
 
 ---
 
 ## ✅ Requisitos previos
-- ⚡ Node.js (v18+)  
-- 🗄️ MongoDB Compass (para conexión a base de datos)  
-- 💻 Visual Studio Code con extensiones recomendadas  
+- ⚡ Node.js v18 o superior  
+- 🗄️ MySQL Server  
+- 🧩 Git  
+- 💻 Visual Studio Code (recomendado)
 
 ---
 
-## ⚙️ Instalación
+## ⚙️ Tecnologías utilizadas
+- **Backend:** Node.js, Express, Sequelize, MySQL  
+- **Frontend:** HTML, CSS, JavaScript  
+- **Autenticación:** JWT  
+- **Control de versiones:** Git y GitHub  
+
+---
+
+## 📦 Instalación
+
+### 1️⃣ Clonar el repositorio
 ```bash
-# Clonar el repositorio
-git clone <URL_REPO>
-cd <nombre_proyecto>
+git clone https://github.com/eliamset/fase1-proyecto.git
+cd fase1-proyecto
 
-# Instalar dependencias
-cd backend && npm install
-cd ../frontend && npm install
-🔧 Configuración del proyecto
-📂 Abrir MongoDB Compass
-
-🛠️ Crear base de datos llamada salud_bienestar
-
-📝 Configurar archivo .env en backend con la cadena de conexión de Compass
-
-🚀 Iniciar backend y frontend:
-
-bash
-Copiar código
-# Backend
-npm start
-
-# Frontend
-npm run dev
-⚠️ Nota importante
-Este proyecto solo funciona con MongoDB Compass.
-❌ No está disponible en MongoDB Atlas.
-
-👥 Autores y Roles
 👑 Eliam → Líder del proyecto, soporte en todos los roles
 
 ⚙️ Miguel → Back-end
